@@ -1,0 +1,21 @@
+div.alert {
+    background-color: pink;
+    animation: change-color 3s infinite;
+    font-weight: bold;
+    padding: 10px;
+}
+
+
+@keyframes change-color {
+    0% {
+        background-color: rgb(255, 128, 0);
+    }
+
+    50% {
+        background-color: red;
+    }
+
+    100% {
+        background-color: rgb(255, 128, 0);
+    }
+}

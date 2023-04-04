@@ -24,6 +24,12 @@
 //         print_r($output);
 //     }
 // }
+$webUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+$host = $_SERVER['HTTP_HOST'];
+$terminal_endpoint = $protocol."://".$host.'/wp-json/'.NTALAM_COUNTDOWN__API_NAMESPACE.'/v1/terminal';
+// echo "<p>".$protocol.'://'.$_SERVER['HTTP_HOST']."</p>";
+// include('config.php');
 ?>
 <script>
     
@@ -31,41 +37,32 @@
 <div style="border: gray solid 1px;
     padding: 5px;">
     <h1> NTalam Countdown</h1>
+    <div>
+        <?php 
+        echo "<p>Page URL: ".$webUrl."</p>";
+        echo "<p>Protocol URL: ".$protocol."</p>";
+        echo "<p>Host: ".$host."</p>";
+        echo '<a href="'.$terminal_endpoint.'" target="_blank">'.NTALAM_COUNTDOWN__API_NAMESPACE.'/v'.NTALAM_COUNTDOWN__ENDPOINT_VERSION.'</a>';
+        echo "<p>Terminal Endpoint: ".$terminal_endpoint."</p>";
+        ?>
+    </div>
     <form method="post">
-        <p><label for="w3review">CopyPaste a GIT command </label></p>
-        <div>
-            <input id="buttonMakingItSafe" 
-            name="isMakingItSafe" class="button" 
-            value="Making it Safe"/>
-           
-            <input type="submit" name="isPulling" class="button" value="Pulling GIT" />
-            <input type="submit" name="button2" class="button" value="Button2" />
-        </div>
         <p><label for="w3review">CopyPaste a Linux command </label></p>
         <div>
             <input id="buttonGetProcessByPort" 
             name="isGettingProcessByPort" class="button" 
             value="Getting Process By Port"/>
-            <input type="submit" name="isPulling" class="button" value="Pulling GIT" />
-            <input type="submit" name="button2" class="button" value="Button2" />
         </div>
-        <p><label for="w3review">CopyPaste a command </label></p>
-        <div>
-            <input type="submit" name="isMakingItSafe" class="button" value="Making it Safe" />
-            <input type="submit" name="isPulling" class="button" value="Pulling GIT" />
-            <input type="submit" name="button2" class="button" value="Button2" />
-        </div>
-        <input type="submit" name="isMakingItSafe" class="button" value="Making it Safe" />
-        <input type="submit" name="isPulling" class="button" value="Pulling GIT" />
-        <input type="submit" name="button2" class="button" value="Button2" />
 
         <p><label for="w3review">Write down your command here:</label></p>
         <textarea id="ntalamCommandTextArea" name="w3review" rows="4" cols="50"></textarea>
         <br>
         <!-- <input type="submit" value="Submit"> -->
         <input id="buttonSubmitAjax" type="button" class="button" value="Execute">
-        <p><label for="w3review">Write down your command here:</label></p>
-        <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea>
+        <input id="buttonSubmitAjaxClear" type="button" class="button" value="Clear">
+        <p>Response from terminal...:</p>
+        <p id='responseArea'></p>
+        <!-- <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea> -->
         <br>
     </form>
     <script>
@@ -87,9 +84,10 @@
                 textArea.innerHTML = textArea.innerHTML + command
             });
         }
-        assignButtonById("buttonMakingItSafe","git config --global --add safe.directory '/var/www/portfolio/portfolio' 2>&1")
-        assignButtonById("buttonGetProcessByPort",'lsof -t -i:3000 2>&1')
-        var url = 'https://restservice.ntalam.com/wp-json/ntalam-linux-control/v1/terminal'
+        assignButtonById("buttonMakingItSafe","git config --global --add safe.directory '/var/www/portfolio/portfolio'")
+        assignButtonById("buttonGetProcessByPort",'lsof -t -i:3000')
+        var url = '<?php
+        echo $terminal_endpoint; ?>'
         var buttonSubmitAjax = document.getElementById("buttonSubmitAjax");
         buttonSubmitAjax.addEventListener("click", function(){
                 const xhr = new XMLHttpRequest();
@@ -102,6 +100,11 @@
                 xhr.open('POST', url, true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.send('com='+textArea.innerHTML);
+            }
+        );
+        var buttonSubmitAjaxClear = document.getElementById("buttonSubmitAjaxClear");
+        buttonSubmitAjaxClear.addEventListener("click", function(){
+            textArea.innerHTML ='';
             }
         );
         function load(url) {

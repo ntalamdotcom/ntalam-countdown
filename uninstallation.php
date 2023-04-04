@@ -4,8 +4,8 @@
 function ntalam_countdown_on_uninstall()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . TABLE_countdown_options;
-    $sql = "DROP TABLE IF EXISTS '".TABLE_countdown_options."'";
+    $table_name = $wpdb->prefix . NTALAM_COUNTDOWN__TABLE_COUNTDOWN_OPTIONS;
+    $sql = "DROP TABLE IF EXISTS '".NTALAM_COUNTDOWN__TABLE_COUNTDOWN_OPTIONS."'";
     add_action( 'admin_notices', function(){
         ?>
         <div class="notice notice-success is-dismissible">

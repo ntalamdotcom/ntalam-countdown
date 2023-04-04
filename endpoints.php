@@ -1,9 +1,16 @@
 <?php 
-$version = 1;
-$namespace = 'ntalam-linux-control/v'.$version ;
+$namespace = NTALAM_COUNTDOWN__API_NAMESPACE.'/v'.NTALAM_COUNTDOWN__ENDPOINT_VERSION ;
 
 add_action( 'rest_api_init', function () {
   global $namespace;
+  register_rest_route( $namespace, '/signin', array(
+    'methods' => 'POST',
+    'callback' => 'my_custom_signin',
+  ) );
+  register_rest_route( $namespace, '/signin', array(
+    'methods' => 'GET',
+    'callback' => 'my_custom_signin',
+  ) );
   register_rest_route( $namespace , '/terminal', array(
     'methods' => 'GET',
     'callback' => 'get_posts_ntalam_countdown',
@@ -26,6 +33,49 @@ function get_posts_ntalam_countdown( $data ) {
   return $posts;
 }    
 function post_terminal_ntalam_countdown( $data ) {
-    $ret = exec($data->get_param( 'com' ), $output, $retval);
-      return print_r($output) . $ret;
+  $commands = $data->get_param( 'com' ).' 2>&1';
+  // return $commands;
+    exec($commands, $output, $retval);
+    // return $retval;
+      return print_r($output);
+}
+
+//curl -X POST -d 'username=ntalam&password="An168421."&remember=true' https://restservice.ntalam.com/wp-json/myplugin/v1/signin
+function my_custom_signin( WP_REST_Request $request ) {
+  // Get the username and password from the request body
+  $username = $request->get_param( 'username' );
+  $password = $request->get_param( 'password' );
+  $remember = $request->get_param( 'remember' );
+
+  // return 'sdf';
+  // Perform authentication here
+  // ...
+
+  // Return the user ID and token as a response
+  // return array(
+  //     'user_id' => $user_id,
+  //     'token' => $token,
+  // );
+
+  // Set up the user credentials
+  $user_credentials = array(
+      'user_login'    => $username,
+      'user_password' => $password,
+      'remember'      => $remember,
+  );
+  // print_r($user_credentials) ;
+  // Sign the user in
+  $user = wp_signon( $user_credentials );
+  // print_r($user);
+  // Check if the sign-in was successful
+  if ( ! is_wp_error( $user ) ) {
+      // The user is signed in, do something
+      // echo 'yes';
+      echo json_encode($user);
+  } else {
+      // The sign-in failed, display an error message
+      $error_message = $user->get_error_message();
+      echo "Error: " . $error_message;
+  }
+
 }

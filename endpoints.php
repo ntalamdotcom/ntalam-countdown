@@ -3,23 +3,67 @@ $namespace = NTALAM_COUNTDOWN__API_NAMESPACE.'/v'.NTALAM_COUNTDOWN__ENDPOINT_VER
 
 add_action( 'rest_api_init', function () {
   global $namespace;
-  register_rest_route( $namespace, '/signin', array(
+  register_rest_route( $namespace, NTALAM_COUNTDOWN__ENDPOINT_SIGN_IN, array(
     'methods' => 'POST',
     'callback' => 'my_custom_signin',
   ) );
-  register_rest_route( $namespace, '/signin', array(
+  register_rest_route( $namespace, NTALAM_COUNTDOWN__ENDPOINT_SIGN_IN, array(
     'methods' => 'GET',
     'callback' => 'my_custom_signin',
   ) );
-  register_rest_route( $namespace , '/terminal', array(
-    'methods' => 'GET',
-    'callback' => 'get_posts_ntalam_countdown',
-  ) );
-  register_rest_route( $namespace, '/terminal', array(
+  register_rest_route( $namespace, NTALAM_COUNTDOWN__ENDPOINT_SAVE_PHRASE, array(
     'methods' => 'POST',
-    'callback' => 'post_terminal_ntalam_countdown',
+    'callback' => 'savePhrase',
   ) );
+  register_rest_route( $namespace, NTALAM_COUNTDOWN__ENDPOINT_SAVE_PHRASE, array(
+    'methods' => 'GET',
+    'callback' => 'savePhrase',
+  ) );
+  register_rest_route( $namespace, NTALAM_COUNTDOWN__ENDPOINT_SAVE_TIME_START, array(
+    'methods' => 'GET',
+    'callback' => 'saveTimeStart',
+  ) );
+
 } );
+
+function saveTimeStart( WP_REST_Request $request ) {
+  // Get the username and password from the request body
+  $username = $request->get_param( 'username' );
+  $password = $request->get_param( 'password' );
+  $remember = $request->get_param( 'remember' );
+
+  $user_credentials = array(
+      'user_login'    => $username,
+      'user_password' => $password,
+      'remember'      => $remember,
+  );
+  $user = wp_signon( $user_credentials );
+  if ( ! is_wp_error( $user ) ) {
+      echo json_encode($user);
+  } else {
+      $error_message = $user->get_error_message();
+      echo "Error: " . $error_message;
+  }
+}
+function savePhrase( WP_REST_Request $request ) {
+  // Get the username and password from the request body
+  $username = $request->get_param( 'username' );
+  $password = $request->get_param( 'password' );
+  $remember = $request->get_param( 'remember' );
+
+  $user_credentials = array(
+      'user_login'    => $username,
+      'user_password' => $password,
+      'remember'      => $remember,
+  );
+  $user = wp_signon( $user_credentials );
+  if ( ! is_wp_error( $user ) ) {
+      echo json_encode($user);
+  } else {
+      $error_message = $user->get_error_message();
+      echo "Error: " . $error_message;
+  }
+}
 
 
 function get_posts_ntalam_countdown( $data ) {

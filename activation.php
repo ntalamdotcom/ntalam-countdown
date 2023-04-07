@@ -48,6 +48,16 @@ function wpb_demo_shortcode() {
     };
 add_shortcode('ntalaCode','wpb_demo_shortcode');
 
-include('banner-top.php');
+function header_script(){
+    $plugin_url = plugin_dir_url( __FILE__ );
+    echo '<script src="'.$plugin_url.'timerNtalam.js">
+    </script>
+    <link rel="stylesheet" href="'.$plugin_url.'stylesTimerNtalam.css">
+    <div class="alert" id="ntalam-div-alert">
+        Clock Here!
+    </div>
+    ';
+}
+add_action( 'wp_enqueue_scripts', 'header_script' );
 
 ?>

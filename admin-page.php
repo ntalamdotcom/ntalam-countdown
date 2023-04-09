@@ -1,37 +1,8 @@
 <?php
-// global $wp;
-// $current_url = $wp->request;
-// echo 'currentasdfasfdf'. $current_url;
-// if ($_POST) {
-//     // echo 'posting... ';
-//     $isPulling = $_POST['isPulling'];
-//     if (isset($isPulling)) {
-//         exec("git -C '/var/www/portfolio/portfolio' pull 2>&1", $output, $retval);
-//         // echo "Returned with status $retval and output:\n";
-//         print_r($output);
-//     }
 
-//     $isMakingItSafe = $_POST['isMakingItSafe'];
-//     if (isset($isMakingItSafe)) {
-//         exec("git config --global --add safe.directory '/var/www/portfolio/portfolio' 2>&1", $output, $retval);
-//         // echo "Returned with status $retval and output:\n";
-//         print_r($output);
-//     }
-//     $isGettingProcessByPort = $_POST['isGettingProcessByPort'];
-//     if (isset($isGettingProcessByPort)) {
-//         exec("git config --global --add safe.directory '/var/www/portfolio/portfolio' 2>&1", $output, $retval);
-//         // echo "Returned with status $retval and output:\n";
-//         print_r($output);
-//     }
-// }
 $webUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
 $host = $_SERVER['HTTP_HOST'];
-// $terminal_endpoint = $protocol . "://" . $host . '/wp-json/' . NTALAM_COUNTDOWN__API_NAMESPACE . '/v1/terminal';
-// echo "<p>".$protocol.'://'.$_SERVER['HTTP_HOST']."</p>";
-// include('config.php');
-// Register the AJAX action
-// include('wp-load.php');
 
 ?>
 <script>
@@ -76,57 +47,16 @@ $host = $_SERVER['HTTP_HOST'];
         <!-- <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea> -->
         <br>
     </form>
-    <form id="my-form">
+    <!-- <form id="my-form">
         <input type="text" id="name" name="name" placeholder="Enter your name">
         <input type="text" id="age" name="age" placeholder="Enter your age">
         <button type="submit">Submit</button>
-    </form>
+    </form> -->
     <script>
-        var textArea = document.getElementById("ntalamCommandTextArea");
+        var textAreaInput = document.getElementById("ntalamCommandTextArea");
         var textAreaResponse = document.getElementById("responseArea");
 
         var gitMakingItSafe = ""
-
-        function assignButtonById(buttonId, command) {
-            var buttonMakingItSafe = document.getElementById(buttonId);
-            if (buttonMakingItSafe) {
-                buttonMakingItSafe.onclick = copyPasteCommand(gitMakingItSafe)
-                buttonMakingItSafe.addEventListener("click", function() {
-                    // textArea = document.getElementById("ntalamCommandTextArea");
-                    textArea.value = textArea.value + command
-                });
-            } else {
-                alert('null: ', buttonId)
-                alert('null: ', command)
-            }
-
-        }
-
-        var url = '<?php
-                    echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>'
-
-        function buttonSubmitAjaxFunction() {
-            var buttonSubmitAjax = document.getElementById("buttonSubmitAjax");
-            if (!buttonSubmitAjax) {
-                alert('null: ')
-            }
-            buttonSubmitAjax.addEventListener("click", function() {
-                const xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = () => {
-                    if (xhr.readyState === 4) {
-                        console.log(xhr.response);
-                        textAreaResponse.innerHTML = xhr.response
-                    }
-                }
-                xhr.open('POST', url, true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                xhr.send('com=' + textArea.innerHTML);
-            });
-        }
-        // var buttonSubmitAjaxClear = document.getElementById("buttonSubmitAjaxClear");
-        // buttonSubmitAjaxClear.addEventListener("click", function() {
-        //     textArea.innerHTML = '';
-        // });
 
         function load(url) {
             const xhr = new XMLHttpRequest();
@@ -208,71 +138,18 @@ $host = $_SERVER['HTTP_HOST'];
             xmlhttp.send('action=save-phrase');
         }
 
-        window.onload = function() {
-            var buttonNameSave = addButton('buttonsContainer', 'buttonIdSave', 'buttonNameSave', 'Save Phrase');
-            buttonNameSave.addEventListener("click", function() {
-                localAjaxRequest(function(t) {
-                    textAreaResponse.value = t
-                })
-            });
-            var buttonClear2 = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear2', 'Clear2');
-            buttonClear2.addEventListener("click", function() {
-                document.getElementById("ntalamCommandTextArea").value = '';
-            });
-
-            var buttonClear22 = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Clear22');
-            buttonClear22.addEventListener('click', function() {
-
-                // Create a new XMLHttpRequest object
-                const xhr = new XMLHttpRequest();
-
-                // Set the AJAX action and the data to send
-                const action = 'my_ajax_action';
-                const data = 'action=' + action;
-                console.log(ajaxurl)
-                // Open the XMLHttpRequest and set the request method to POST
-                xhr.open('POST', ajaxurl, true);
-
-                // Set the request header to indicate that we're sending form data
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-                // Add an event listener to the XMLHttpRequest object to handle the response
-                xhr.addEventListener('load', function() {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        console.log(response.message);
-                    }
-                });
-
-                // Send the AJAX request with the data
-                xhr.send(data);
-            });
-            getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
-        };
-
-        const form = document.getElementById('my-form');
-        const nameInput = document.getElementById('name');
-        const ageInput = document.getElementById('age');
-
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const name = nameInput.value;
-            const age = ageInput.value;
-            const data = new FormData();
-            data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
-            data.append('name', name);
-            data.append('age', age);
+        function ajaxRequest(data) {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', ajaxurl);
-                console.log('ajaxurl: ',ajaxurl)
+            console.log('ajaxurl: ', ajaxurl)
             xhr.onload = function() {
                 // console.log(xhr)
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    
+
                     if (response.success) {
                         // console.log(response.message);
-                        console.log('response: ',response);
+                        console.log('response: ', response);
                     } else {
                         console.log(response.data);
                     }
@@ -281,8 +158,24 @@ $host = $_SERVER['HTTP_HOST'];
                 }
             };
             xhr.send(data);
-        });
+        }
 
-        // Add a click event listener to the button
+        window.onload = function() {
+
+            var buttonClear = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear', 'Clear');
+            buttonClear.addEventListener("click", function() {
+                document.getElementById("ntalamCommandTextArea").value = '';
+            });
+
+            var buttonClear22 = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Clear22');
+            buttonClear22.addEventListener('click', function() {
+                const name = 'nameInput.value';
+                const data = new FormData();
+                data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
+                data.append('phrase', textAreaInput.value);
+                ajaxRequest(data)
+            });
+            getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
+        };
     </script>
 </div>

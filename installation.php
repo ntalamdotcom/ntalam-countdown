@@ -2,7 +2,13 @@
 
 function ntalam_countdown_activation_action()
 {
-    
+  // add_action('wp_ajax_my_ajax_action', 'my_ajax_function');
+
+  // // Handle the AJAX request
+  // function my_ajax_function()
+  // {
+  //     // echo 'holy';
+  // }   
     set_transient( 'ntalam_countdown_admin_notice_'.get_current_user_id(), true, 10 );
 
     global $wpdb;

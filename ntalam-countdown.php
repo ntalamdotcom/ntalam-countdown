@@ -11,7 +11,14 @@
     Text Domain: wpb-tutorial
     Domain Path: /languages
     */
+    // add_action('wp_ajax_my_ajax_action', 'my_ajax_action');
 
+    // function my_ajax_action()
+    // {
+    //     $response = array('message' => 'Hello from the server!');
+    //     wp_send_json_success($response);
+    //     // die();
+    // }
     /**
      * common vars for the plugin
      */

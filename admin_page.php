@@ -33,14 +33,15 @@ $host = $_SERVER['HTTP_HOST'];
 // Register the AJAX action
 // include('wp-load.php');
 
-add_action('wp_ajax_my_ajax_action', 'my_ajax_function');
+// add_action('wp_ajax_my_ajax_action', 'my_ajax_action');
 
-// Handle the AJAX request
-function my_ajax_function()
-{
-    $response = array('message' => 'Hello from the server!');
-    wp_send_json_success($response);
-}
+// // Handle the AJAX request
+// function my_ajax_action()
+// {
+//     $response = array('message' => 'Hello from the server!');
+//     wp_send_json_success($response);
+//     // die();
+// }
 
 ?>
 <script>
@@ -242,6 +243,8 @@ function my_ajax_function()
 
                 // Add an event listener to the XMLHttpRequest object to handle the response
                 xhr.addEventListener('load', function() {
+                    console.log(xhr.status);
+                    console.log(xhr.statusText);
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
                         console.log(response.message);

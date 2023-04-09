@@ -123,3 +123,4 @@ function my_custom_signin( WP_REST_Request $request ) {
   }
 
 }
+?>

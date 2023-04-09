@@ -1,4 +1,5 @@
 <?php
+
 require ABSPATH . 'wp-admin/includes/upgrade.php';
 
     include('installation.php');
@@ -13,7 +14,7 @@ require ABSPATH . 'wp-admin/includes/upgrade.php';
 
     function init_ntalam_countdown()
     {
-        include('admin_page.php');
+        include('admin-page.php');
     }
 
 function fx_admin_notice_example_notice(){
@@ -26,6 +27,15 @@ function fx_admin_notice_example_notice(){
         <?php 
         /* Delete transient, only display this notice once. */
         delete_transient('ntalam_countdown_admin_notice_'.get_current_user_id() );
+    }
+    if( get_transient( 'ntalam_countdown_admin_error_notice_'.get_current_user_id() ) ){
+        ?>
+        <div class="error">
+            <p>NTalam plugin has generated an error. Please check your log.</p>
+        </div>
+        <?php 
+        /* Delete transient, only display this notice once. */
+        delete_transient('ntalam_countdown_admin_error_notice_'.get_current_user_id() );
     }
 }
 

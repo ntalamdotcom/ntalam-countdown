@@ -27,4 +27,5 @@
      */
     include('endpoints.php');
     
+    include('ajax-admin-handler.php');
 ?>

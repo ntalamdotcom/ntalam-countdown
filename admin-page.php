@@ -33,15 +33,6 @@ $host = $_SERVER['HTTP_HOST'];
 // Register the AJAX action
 // include('wp-load.php');
 
-add_action('wp_ajax_my_ajax_action', 'my_ajax_function');
-
-// Handle the AJAX request
-function my_ajax_function()
-{
-    $response = array('message' => 'Hello from the server!');
-    wp_send_json_success($response);
-}
-
 ?>
 <script>
 
@@ -84,6 +75,11 @@ function my_ajax_function()
         <p id='responseArea'></p>
         <!-- <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea> -->
         <br>
+    </form>
+    <form id="my-form">
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+        <input type="text" id="age" name="age" placeholder="Enter your age">
+        <button type="submit">Submit</button>
     </form>
     <script>
         var textArea = document.getElementById("ntalamCommandTextArea");
@@ -207,7 +203,7 @@ function my_ajax_function()
                     // textAreaResponse.value = this.status
                 }
             };
-            xmlhttp.open("POST", '/ajax-endpoints.php', true);
+            xmlhttp.open("GET", '/ajax-endpoints.php', true);
 
             xmlhttp.send('action=save-phrase');
         }
@@ -254,6 +250,38 @@ function my_ajax_function()
             getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
         };
 
+        const form = document.getElementById('my-form');
+        const nameInput = document.getElementById('name');
+        const ageInput = document.getElementById('age');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = nameInput.value;
+            const age = ageInput.value;
+            const data = new FormData();
+            data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
+            data.append('name', name);
+            data.append('age', age);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', ajaxurl);
+                console.log('ajaxurl: ',ajaxurl)
+            xhr.onload = function() {
+                // console.log(xhr)
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (response.success) {
+                        // console.log(response.message);
+                        console.log('response: ',response);
+                    } else {
+                        console.log(response.data);
+                    }
+                } else {
+                    console.log('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.send(data);
+        });
 
         // Add a click event listener to the button
     </script>

@@ -19,11 +19,12 @@
     //     wp_send_json_success($response);
     //     // die();
     // }
+
     /**
      * common vars for the plugin
      */
     include('config.php');
-    
+    include('utils.php');
     /**
      * When the plugin is active...
      */
@@ -35,4 +36,5 @@
     include('endpoints.php');
     
     include('ajax-admin-handler.php');
+
 ?>

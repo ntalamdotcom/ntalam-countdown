@@ -19,14 +19,19 @@ function insert_countdown_options($key, $value, $user_id)
         return true;
     }
 }
-function select_last_countdown_options()
+/**
+ * It brings the last option based on the key and user id
+ */
+// function select_last_countdown_options($key,$userId)
+function select_last_countdown_options($key)
 {
     global $wpdb;
     $table_name = $wpdb->prefix . NTALAM_COUNTDOWN__TABLE_COUNTDOWN_OPTIONS; // replace my_table with your table name
-
+    $query ="SELECT * FROM `".$table_name."` WHERE `key` LIKE '".$key."' ORDER BY `id` DESC LIMIT 1";
+    errorLog($query);
     $res = $wpdb->get_row(
         $wpdb->prepare(
-            "SELECT * FROM `wp_ntalam_countdown_options` ORDER by id desc limit 1;"
+            $query
         )
     );
     if ($res === false) {

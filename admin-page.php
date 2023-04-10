@@ -4,6 +4,19 @@ $webUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "h
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
 $host = $_SERVER['HTTP_HOST'];
 
+$sel = select_last_countdown_options('color1');
+if (isset($sel)) {
+    $color1Form = $sel->value;
+} else {
+    $color1Form = 'ERROR LOADING COLOR 1 (DOES IT EXIST?)';
+}
+$sel = select_last_countdown_options('color2');
+if (isset($sel)) {
+    $color2Form = $sel->value;
+} else {
+    $color2Form = 'ERROR LOADING COLOR 1 (DOES IT EXIST?)';
+}
+
 ?>
 <script>
 
@@ -46,16 +59,20 @@ $host = $_SERVER['HTTP_HOST'];
         <p id='responseArea'></p>
         <!-- <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea> -->
         <br>
+        <div>
+            <input type="color" id="inputColor1" name="color1" value="<?php echo $color1Form; ?>">
+            <label for="color1">Color 1</label>
+            <input type="color" id="inputColor2" name="head" value="<?php echo $color2Form; ?>">
+            <label for="head">Color 2</label>
+        </div>
     </form>
-    <!-- <form id="my-form">
-        <input type="text" id="name" name="name" placeholder="Enter your name">
-        <input type="text" id="age" name="age" placeholder="Enter your age">
-        <button type="submit">Submit</button>
-    </form> -->
+    <?php include('js-thing.php'); ?>
     <script>
         var textAreaInput = document.getElementById("ntalamCommandTextArea");
         var textAreaResponse = document.getElementById("responseArea");
-
+        var inputColor1 = document.getElementById("inputColor1");
+        var inputColor2 = document.getElementById("inputColor2");
+    
         var gitMakingItSafe = ""
 
         function load(url) {
@@ -134,7 +151,6 @@ $host = $_SERVER['HTTP_HOST'];
                 }
             };
             xmlhttp.open("GET", '/ajax-endpoints.php', true);
-
             xmlhttp.send('action=save-phrase');
         }
 
@@ -160,15 +176,48 @@ $host = $_SERVER['HTTP_HOST'];
             xhr.send(data);
         }
 
-        window.onload = function() {
+        function updateColor() {
+            const styleSheets = document.styleSheets;
+            for (let i = 0; i < styleSheets.length; i++) {
+                const styleSheet = styleSheets[i];
+                for (let j = 0; j < styleSheet.cssRules.length; j++) {
+                    const cssRule = styleSheet.cssRules[j];
+                    if (cssRule.type === window.CSSRule.KEYFRAMES_RULE && cssRule.name === 'change-color') {
+                        const keyframesRule = cssRule;
+                        keyframesRule.cssRules[0].style.backgroundColor = inputColor1.value;
+                        keyframesRule.cssRules[1].style.backgroundColor = inputColor2.value;
+                        keyframesRule.cssRules[2].style.backgroundColor = inputColor1.value;
+                    }
+                }
+            }
+        }
 
+        window.onload = function() {
+            inputColor1.addEventListener('input', function() {
+                const color = this.value;
+                // console.log(color)
+                const data = new FormData();
+                data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_1; ?>');
+                data.append('color1', color);
+                ajaxRequest(data)
+                updateColor()
+            });
+            inputColor2.addEventListener('input', function() {
+                const color = this.value;
+                // console.log(color)
+                const data = new FormData();
+                data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_2; ?>');
+                data.append('color2', color);
+                ajaxRequest(data)
+                updateColor()
+            });
             var buttonClear = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear', 'Clear');
             buttonClear.addEventListener("click", function() {
                 document.getElementById("ntalamCommandTextArea").value = '';
             });
 
-            var buttonClear22 = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Clear22');
-            buttonClear22.addEventListener('click', function() {
+            var buttonSavePhrase = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Save Phrase');
+            buttonSavePhrase.addEventListener('click', function() {
                 const name = 'nameInput.value';
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');

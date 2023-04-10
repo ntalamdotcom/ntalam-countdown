@@ -13,7 +13,7 @@ function ntalam_countdown_activation_action()
         INDEX (`id`));";
 
   $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$tablename'") == $tablename;
-  $filepath = 'error_file.log';
+  // $filepath = 'error_file.log';
 
   if ($table_exists) {
   } else {
@@ -21,7 +21,8 @@ function ntalam_countdown_activation_action()
     $lastError = $wpdb->last_error;
     if ($lastError) {
       $wpdb->print_error();
-      error_log(PHP_EOL . $lastError, 3, $filepath);
+      // error_log(PHP_EOL . $lastError, 3, NTALAM_COUNTDOWN__AJAX_ACTION_ERROR_LOG_PATH);
+      errorLog($lastError);
       set_transient('ntalam_countdown_admin_error_notice_' . get_current_user_id(), true, 10);
       die();
     }

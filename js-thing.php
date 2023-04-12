@@ -23,25 +23,41 @@ if (isset($sel)) {
 
 ?>
 <script>
-    var countDownDate = new Date("Nov 3, 2023 00:00:25").getTime();
+    var intervalId;
 
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-        // Get today's date and time
-        var now = new Date().getTime();
+    function setCountdownDate(newDate, newPhrase) {
+        var countDownDate = new Date("Nov 3, 2023 00:00:25").getTime();
+        if (newDate) {
+            countDownDate = new Date(newDate).getTime();
+            console.log("countdowndate: ",countDownDate)
+        }
+        intervalId = setInterval(function() {
+            // Get today's date and time
+            var now = new Date().getTime();
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
 
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        const divAlert = document.getElementById("ntalam-div-alert");
-        divAlert.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        divAlert.innerHTML += '<?php echo $phrase; ?>'
-    }, 1000);
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const divAlert = document.getElementById("ntalam-div-alert");
+            divAlert.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            if (newPhrase) {
+                divAlert.innerHTML += newPhrase;
+            } else {
+                divAlert.innerHTML += '<?php echo $phrase; ?>';
+            }
+
+        }, 1000);
+    }
+
+    function stopInterval() {
+        clearInterval(intervalId);
+    }
+    setCountdownDate()
 </script>
 <style>
     div.alert {

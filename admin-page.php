@@ -16,6 +16,12 @@ if (isset($sel)) {
 } else {
     $color2Form = 'ERROR LOADING COLOR 1 (DOES IT EXIST?)';
 }
+$sel = select_last_countdown_options('deadline');
+if (isset($sel)) {
+    $deadline = $sel->value;
+} else {
+    $deadline = '2018-07-22';
+}
 
 ?>
 <script>
@@ -65,15 +71,20 @@ if (isset($sel)) {
             <input type="color" id="inputColor2" name="head" value="<?php echo $color2Form; ?>">
             <label for="head">Color 2</label>
         </div>
+        <div>
+            <label for="start">Deadline:</label>
+            <!-- <div><?php echo $deadline; ?></div> -->
+            <input type="date" id="inputDeadline" name="trip-start" value="<?php echo $deadline; ?>">
+        </div>
     </form>
     <?php include('js-thing.php'); ?>
     <script>
         var textAreaInput = document.getElementById("ntalamCommandTextArea");
+        textAreaInput.value = '<?php echo $phrase; ?>'
+
         var textAreaResponse = document.getElementById("responseArea");
         var inputColor1 = document.getElementById("inputColor1");
         var inputColor2 = document.getElementById("inputColor2");
-    
-        var gitMakingItSafe = ""
 
         function load(url) {
             const xhr = new XMLHttpRequest();
@@ -154,7 +165,7 @@ if (isset($sel)) {
             xmlhttp.send('action=save-phrase');
         }
 
-        function ajaxRequest(data) {
+        function ajaxRequest(data,callback) {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', ajaxurl);
             console.log('ajaxurl: ', ajaxurl)
@@ -162,10 +173,12 @@ if (isset($sel)) {
                 // console.log(xhr)
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-
                     if (response.success) {
                         // console.log(response.message);
-                        console.log('response: ', response);
+                        // console.log('response: ', response);
+                        if(callback){
+                            callback()
+                        }
                     } else {
                         console.log(response.data);
                     }
@@ -190,7 +203,10 @@ if (isset($sel)) {
                     }
                 }
             }
+            console.log('colors update')
         }
+
+        var inputDeadline = document.getElementById("inputDeadline");
 
         window.onload = function() {
             inputColor1.addEventListener('input', function() {
@@ -199,8 +215,7 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_1; ?>');
                 data.append('color1', color);
-                ajaxRequest(data)
-                updateColor()
+                ajaxRequest(data,updateColor())
             });
             inputColor2.addEventListener('input', function() {
                 const color = this.value;
@@ -208,8 +223,7 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_2; ?>');
                 data.append('color2', color);
-                ajaxRequest(data)
-                updateColor()
+                ajaxRequest(data,updateColor())
             });
             var buttonClear = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear', 'Clear');
             buttonClear.addEventListener("click", function() {
@@ -218,13 +232,32 @@ if (isset($sel)) {
 
             var buttonSavePhrase = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Save Phrase');
             buttonSavePhrase.addEventListener('click', function() {
-                const name = 'nameInput.value';
+                var valText = textAreaInput.value;
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
-                data.append('phrase', textAreaInput.value);
-                ajaxRequest(data)
+                data.append('phrase', valText);
+                ajaxRequest(data,function(){
+                    stopInterval()
+                    setCountdownDate(null,valText)
+                });
+                
+            });
+
+            inputDeadline.addEventListener('input', function() {
+                var valDate = inputDeadline.value;
+                const data = new FormData();
+                data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_DEADLINE; ?>');
+                data.append('deadline', valDate);
+                ajaxRequest(data,function(){
+                    stopInterval()
+                    setCountdownDate(valDate, null)
+                });
             });
             getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
         };
+
+        function setTodayDate() {
+            return
+        }
     </script>
 </div>

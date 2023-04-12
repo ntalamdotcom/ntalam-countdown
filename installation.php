@@ -9,6 +9,7 @@ function ntalam_countdown_activation_action()
         `key` varchar(200) NOT NULL,
         `value` varchar(350) NOT NULL,
         `user_id` bigint NOT NULL,
+        `deadline` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (`id`),
         INDEX (`id`));";
 

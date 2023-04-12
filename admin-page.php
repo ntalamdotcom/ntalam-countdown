@@ -110,7 +110,7 @@ if (isset($sel)) {
         <div>
             <label for="start">Deadline:</label>
             <!-- <div><?php echo $deadline; ?></div> -->
-            <input type="date" id="inputDeadline" name="trip-start" value="<?php echo $deadline; ?>">
+            <input type="datetime-local" id="inputDeadline" name="trip-start" value="<?php echo $deadline; ?>">
         </div>
 
         <?php

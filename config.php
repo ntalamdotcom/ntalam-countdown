@@ -6,6 +6,7 @@
     define('NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_DEADLINE', 'save_deadline');
     define('NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_1', 'save_color_1');
     define('NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_2', 'save_color_2');
+    define('NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_CHANGES', 'save_changes');
     define('NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_TEXT_COLOR', 'save_text_color');
     define('NTALAM_COUNTDOWN__AJAX_ACTION_ERROR_LOG_PATH', 'error_file.log');
     

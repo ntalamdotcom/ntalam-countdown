@@ -24,9 +24,39 @@ if (isset($sel)) {
 }
 
 ?>
-<script>
+<style>
+    .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 100px;
+        height: 100px;
+        -webkit-animation: spin 2s linear infinite;
+        /* Safari */
+        animation: spin 2s linear infinite;
+    }
 
-</script>
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 <div style="border: gray solid 1px;
     padding: 5px;">
     <h1> NTalam Countdown</h1>
@@ -43,46 +73,53 @@ if (isset($sel)) {
         // echo '<p><a href="' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . '" target="_blank">' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . '</a></p>';
         // echo '<p><a href="' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . NTALAM_COUNTDOWN__ENDPOINT_SAVE_PHRASE . '" target="_blank">' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . NTALAM_COUNTDOWN__ENDPOINT_SAVE_PHRASE . '</a></p>';
         // echo '<p><a href="' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . NTALAM_COUNTDOWN__ENDPOINT_SAVE_TIME_START . '" target="_blank">' . NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS . NTALAM_COUNTDOWN__ENDPOINT_SAVE_TIME_START . '</a></p>';
-        echo '<h2>Endpoints</h2>';
-        echo '<p id="treeEndpoints"></p>';
+        // echo '<h2>Endpoints</h2>';
+        // echo '<p id="treeEndpoints"></p>';
         // echo '<p >'.rest_url().'</p>';
         // echo ;
         // echo "<p>Terminal Endpoint: " . home_url('/ntalam-countdown/') . "</p>";
         ?>
     </div>
     <form method="post">
+        <h2>Endpoints (external access)</h2>
+        <p id="treeEndpoints"></p>
         <h2>Write a countdown description</h2>
         <textarea id="ntalamCommandTextArea" name="w3review" rows="4" cols="50"></textarea>
         <div id="buttonsContainer">
             <!-- <input id="buttonGetProcessByPort" name="isGettingProcessByPort" class="button" value="Getting Process By Port" /> -->
         </div>
-
-        <br>
-        <!-- <input type="submit" value="Submit"> -->
-        <!-- <input id="buttonSubmitAjax" type="button" class="button" value="Execute"> -->
-        <!-- <input id="buttonSubmitAjaxClear" type="button" class="button" value="Clear"> -->
-        <p>Response from terminal...:</p>
-        <p id='responseArea'></p>
-        <!-- <textarea id="responseArea" name="responseArea" rows="4" cols="50"></textarea> -->
-        <br>
         <div>
-            <input type="color" id="inputColor1" name="color1" value="<?php echo $color1Form; ?>">
             <label for="color1">Color 1</label>
-            <input type="color" id="inputColor2" name="head" value="<?php echo $color2Form; ?>">
+            <input type="color" id="inputColor1" name="color1" value="<?php echo $color1Form; ?>">
+
             <label for="head">Color 2</label>
+            <input type="color" id="inputColor2" name="head" value="<?php echo $color2Form; ?>">
+
         </div>
         <div>
             <label for="start">Deadline:</label>
             <!-- <div><?php echo $deadline; ?></div> -->
             <input type="date" id="inputDeadline" name="trip-start" value="<?php echo $deadline; ?>">
         </div>
+
+        <?php add_thickbox(); ?>
+        <div id="my-content-id" style="display:none;">
+            <div>
+                <!-- <div class="loader"></div> -->
+                <p>
+                    Please Hold
+                </p>
+            </div>
+        </div>
+
+        <a href="#TB_inline?&width=200&height=250&inlineId=my-content-id" class="thickbox" style="display:none;">View my inline content!</a>
     </form>
     <?php include('js-thing.php'); ?>
     <script>
         var textAreaInput = document.getElementById("ntalamCommandTextArea");
         textAreaInput.value = '<?php echo $phrase; ?>'
 
-        var textAreaResponse = document.getElementById("responseArea");
+
         var inputColor1 = document.getElementById("inputColor1");
         var inputColor2 = document.getElementById("inputColor2");
 
@@ -165,7 +202,7 @@ if (isset($sel)) {
             xmlhttp.send('action=save-phrase');
         }
 
-        function ajaxRequest(data,callback) {
+        function ajaxRequest(data, callback) {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', ajaxurl);
             console.log('ajaxurl: ', ajaxurl)
@@ -176,7 +213,7 @@ if (isset($sel)) {
                     if (response.success) {
                         // console.log(response.message);
                         // console.log('response: ', response);
-                        if(callback){
+                        if (callback) {
                             callback()
                         }
                     } else {
@@ -215,7 +252,7 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_1; ?>');
                 data.append('color1', color);
-                ajaxRequest(data,updateColor())
+                ajaxRequest(data, updateColor())
             });
             inputColor2.addEventListener('input', function() {
                 const color = this.value;
@@ -223,7 +260,7 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_2; ?>');
                 data.append('color2', color);
-                ajaxRequest(data,updateColor())
+                ajaxRequest(data, updateColor())
             });
             var buttonClear = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear', 'Clear');
             buttonClear.addEventListener("click", function() {
@@ -236,11 +273,11 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
                 data.append('phrase', valText);
-                ajaxRequest(data,function(){
+                ajaxRequest(data, function() {
                     stopInterval()
-                    setCountdownDate(null,valText)
+                    setCountdownDate(null, valText)
                 });
-                
+
             });
 
             inputDeadline.addEventListener('input', function() {
@@ -248,7 +285,7 @@ if (isset($sel)) {
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_DEADLINE; ?>');
                 data.append('deadline', valDate);
-                ajaxRequest(data,function(){
+                ajaxRequest(data, function() {
                     stopInterval()
                     setCountdownDate(valDate, null)
                 });

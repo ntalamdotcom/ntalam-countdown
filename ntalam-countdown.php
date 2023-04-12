@@ -29,11 +29,6 @@
      * When the plugin is active...
      */
     include('activation.php');
-
-    /**
-     * For external access. Mobile App soon
-     */
-    include('endpoints.php');
     
     include('ajax-admin-handler.php');
 

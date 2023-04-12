@@ -22,6 +22,12 @@ if (isset($sel)) {
 } else {
     $deadline = '2018-07-22';
 }
+$sel = select_last_countdown_options('textColor');
+if (isset($sel)) {
+    $textColor = $sel->value;
+} else {
+    $textColor = '2018-07-22';
+}
 
 ?>
 <style>
@@ -56,6 +62,9 @@ if (isset($sel)) {
             transform: rotate(360deg);
         }
     }
+
+    /*
+    */
 </style>
 <div style="border: gray solid 1px;
     padding: 5px;">
@@ -80,11 +89,11 @@ if (isset($sel)) {
         // echo "<p>Terminal Endpoint: " . home_url('/ntalam-countdown/') . "</p>";
         ?>
     </div>
-    <form method="post">
+    <form method="post" id='formId'>
         <h2>Endpoints (external access)</h2>
         <p id="treeEndpoints"></p>
         <h2>Write a countdown description</h2>
-        <textarea id="ntalamCommandTextArea" name="w3review" rows="4" cols="50"></textarea>
+        <textarea id="ntalamCommandTextArea" wrap="off" name="w3review" rows="1" cols="50"></textarea>
         <div id="buttonsContainer">
             <!-- <input id="buttonGetProcessByPort" name="isGettingProcessByPort" class="button" value="Getting Process By Port" /> -->
         </div>
@@ -94,6 +103,8 @@ if (isset($sel)) {
 
             <label for="head">Color 2</label>
             <input type="color" id="inputColor2" name="head" value="<?php echo $color2Form; ?>">
+            <label for="head">Text Color</label>
+            <input type="color" id="inputTextColor" name="textColor" value="<?php echo $textColor; ?>">
 
         </div>
         <div>
@@ -102,17 +113,18 @@ if (isset($sel)) {
             <input type="date" id="inputDeadline" name="trip-start" value="<?php echo $deadline; ?>">
         </div>
 
-        <?php add_thickbox(); ?>
-        <div id="my-content-id" style="display:none;">
+        <?php
+        // add_thickbox();
+        ?>
+        <!-- <div id="my-content-id" style="display:none;pointer-events: none;">
             <div>
-                <!-- <div class="loader"></div> -->
+                <div class="loader"></div>
                 <p>
                     Please Hold
                 </p>
             </div>
         </div>
-
-        <a href="#TB_inline?&width=200&height=250&inlineId=my-content-id" class="thickbox" style="display:none;">View my inline content!</a>
+        <a href="#TB_inline?&width=200&height=250&inlineId=my-content-id" class="thickbox">View my inline content!</a> -->
     </form>
     <?php include('js-thing.php'); ?>
     <script>
@@ -120,8 +132,10 @@ if (isset($sel)) {
         textAreaInput.value = '<?php echo $phrase; ?>'
 
 
+        var ntalamDivAlert = document.getElementById("ntalam-div-alert");
         var inputColor1 = document.getElementById("inputColor1");
         var inputColor2 = document.getElementById("inputColor2");
+        var inputTextColor = document.getElementById("inputTextColor");
 
         function load(url) {
             const xhr = new XMLHttpRequest();
@@ -203,6 +217,7 @@ if (isset($sel)) {
         }
 
         function ajaxRequest(data, callback) {
+            toggleActiveAllInputs(true)
             const xhr = new XMLHttpRequest();
             xhr.open('POST', ajaxurl);
             console.log('ajaxurl: ', ajaxurl)
@@ -222,6 +237,7 @@ if (isset($sel)) {
                 } else {
                     console.log('Error: ' + xhr.statusText);
                 }
+                toggleActiveAllInputs(false)
             };
             xhr.send(data);
         }
@@ -240,26 +256,41 @@ if (isset($sel)) {
                     }
                 }
             }
+            ntalamDivAlert.style.color = inputTextColor.value;
             console.log('colors update')
         }
 
         var inputDeadline = document.getElementById("inputDeadline");
 
+        function toggleActiveAllInputs(valueBool) {
+            const form = document.querySelector('#formId');
+            form.querySelectorAll('input, button').forEach((el) => {
+                el.disabled = valueBool;
+            });
+        }
+
         window.onload = function() {
-            inputColor1.addEventListener('input', function() {
+            inputColor1.addEventListener('blur', function() {
                 const color = this.value;
-                // console.log(color)
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_1; ?>');
                 data.append('color1', color);
                 ajaxRequest(data, updateColor())
             });
-            inputColor2.addEventListener('input', function() {
+            inputColor2.addEventListener('blur', function() {
                 const color = this.value;
                 // console.log(color)
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_COLOR_2; ?>');
                 data.append('color2', color);
+                ajaxRequest(data, updateColor())
+            });
+            inputTextColor.addEventListener('blur', function() {
+                const color = this.value;
+                // console.log(color)
+                const data = new FormData();
+                data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_TEXT_COLOR; ?>');
+                data.append('textColor', color);
                 ajaxRequest(data, updateColor())
             });
             var buttonClear = addButton('buttonsContainer', 'buttonIdClear', 'buttonClear', 'Clear');
@@ -269,6 +300,7 @@ if (isset($sel)) {
 
             var buttonSavePhrase = addButton('buttonsContainer', 'buttonIdClear2', 'buttonClear22', 'Save Phrase');
             buttonSavePhrase.addEventListener('click', function() {
+                // toggleActiveAllInputs(true)
                 var valText = textAreaInput.value;
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_PHRASE; ?>');
@@ -276,11 +308,13 @@ if (isset($sel)) {
                 ajaxRequest(data, function() {
                     stopInterval()
                     setCountdownDate(null, valText)
+                    // toggleActiveAllInputs(false)
                 });
 
             });
 
             inputDeadline.addEventListener('input', function() {
+                // toggleActiveAllInputs(true)
                 var valDate = inputDeadline.value;
                 const data = new FormData();
                 data.append('action', '<?php echo NTALAM_COUNTDOWN__AJAX_ACTION_SAVE_DEADLINE; ?>');
@@ -288,13 +322,12 @@ if (isset($sel)) {
                 ajaxRequest(data, function() {
                     stopInterval()
                     setCountdownDate(valDate, null)
+                    // toggleActiveAllInputs(false)
                 });
             });
-            getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
-        };
 
-        function setTodayDate() {
-            return
-        }
+            getEndPoints('<?php echo NTALAM_COUNTDOWN__API_NAMESPACE_ADDRESS; ?>')
+            updateColor()
+        };
     </script>
 </div>

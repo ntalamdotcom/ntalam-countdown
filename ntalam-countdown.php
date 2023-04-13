@@ -1,13 +1,13 @@
 <?php
 /*
     Plugin Name: NTalaM-countdown
-    Plugin URI: https://countdown.ntalam.com
+    Plugin URI: https://github.com/ntalamdotcom/ntalam-countdown
     Description: This is my first plugin. It is a simple countdown banner on the top of a website.
     Version: 0.2
     Author: NtalaM
     Author URI: https://ntalam.com
-    License: GPL2
-    License URI: https://www.gnu.org/licenses/gpl-2.0.html
+    License: GPL3
+    License URI: https://www.gnu.org/licenses/gpl-3.0.html
     Text Domain: wpb-tutorial
     Domain Path: /languages
     */
